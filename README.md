@@ -16,7 +16,7 @@ your product from its own manual and warranty card — citing the page.
     <td align="center"><img src="docs/screenshots/sign-in.png" width="200" alt="Sign-in screen"><br><sub>Sign in</sub></td>
     <td align="center"><img src="docs/screenshots/vault.png" width="200" alt="Vault with expiry chips"><br><sub>The vault</sub></td>
     <td align="center"><img src="docs/screenshots/product-detail.png" width="200" alt="Product detail"><br><sub>Product detail</sub></td>
-    <td align="center"><img src="docs/screenshots/ask-citation.png" width="200" alt="An answer with a page citation"><br><sub>Answer with citation</sub></td>
+    <td align="center"><img src="docs/screenshots/ask-citation.png" width="200" alt="An answer with its sources"><br><sub>An answer with its sources</sub></td>
   </tr>
 </table>
 
