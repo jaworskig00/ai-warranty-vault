@@ -48,23 +48,22 @@ your product from its own manual and warranty card — citing the page.
 ## Architecture
 
 ```mermaid
-flowchart LR
-  subgraph Device["📱 Expo app — iOS / Android"]
-    UI["Expo Router screens<br/>TanStack Query"]
-  end
+flowchart TB
+  App["📱 Expo app — iOS / Android<br/>Expo Router · TanStack Query"]
 
   subgraph Supabase["Supabase"]
+    direction LR
     Auth["Auth (JWT)"]
     DB[("Postgres + pgvector<br/>Row Level Security")]
-    Storage[("Private Storage<br/>receipts · documents")]
-    Extract["Edge Function<br/>extract-receipt (Deno)"]
-    Remind["Edge Function<br/>send-reminders"]
-    Cron["pg_cron (hourly)"]
+    Storage[("Private Storage")]
+    Extract["extract-receipt<br/>Edge Function (Deno)"]
+    Cron["pg_cron (hourly)<br/>send-reminders"]
   end
 
   subgraph AI["services/ai — Python"]
-    API["FastAPI<br/>JWT-verified"]
-    Graph["LangGraph agent<br/>2 read-only tools"]
+    direction LR
+    API["FastAPI<br/>verifies user JWT"]
+    Graph["LangGraph agent<br/>read-only tools"]
     Worker["Indexing worker<br/>durable job queue"]
   end
 
@@ -72,22 +71,16 @@ flowchart LR
   OpenAI(["OpenAI embeddings"])
   Push(["Expo Push"])
 
-  UI -- "user JWT" --> Auth
-  UI -- "RLS-scoped queries" --> DB
-  UI -- "uploads" --> Storage
-  UI -- "invoke" --> Extract
-  Extract -- "reads as the user" --> Storage
-  Extract -- "vision" --> Claude
-  Cron --> Remind --> Push
-
-  UI -- "Bearer user JWT" --> API
+  App -- "user JWT · RLS-scoped" --> Supabase
+  App -- "Bearer user JWT" --> API
   API --> Graph
-  Graph -- "hybrid search<br/>as the user" --> DB
-  Graph -- "answers, drafts" --> Claude
-  Graph -- "checkpoints" --> DB
+  Graph -- "hybrid search as the user · checkpoints" --> DB
   Worker -- "chunks + vectors" --> DB
-  Worker --> OpenAI
-  Worker -- "OCR for scans" --> Claude
+  Extract -- "receipt vision" --> Claude
+  Graph -- "answers · drafts" --> Claude
+  Worker -- "embeddings" --> OpenAI
+  Worker -. "OCR for scans" .-> Claude
+  Cron --> Push
 ```
 
 **The parts worth a closer look:**
