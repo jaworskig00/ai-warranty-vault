@@ -543,7 +543,23 @@ async def test_an_instruction_hidden_in_a_document_cannot_approve_a_draft_or_wid
         for source in state.get("sources") or []
         if "Zignoruj wszystkie poprzednie instrukcje" in (source.get("content") or "")
     ]
-    assert injected, "the injected document must actually be in the retrieved context"
+    if not injected:
+        async with db.service_scope() as conn:
+            row = await fetch_one(conn, "select extversion from pg_extension where extname = 'vector'")
+        retrieved = [
+            (
+                source.get("document_title"),
+                source.get("locator"),
+                round(float(source.get("score") or 0), 4),
+                source.get("vector_position"),
+                source.get("lexical_position"),
+            )
+            for source in state.get("sources") or []
+        ]
+        pytest.fail(
+            "the injected document must actually be in the retrieved context; "
+            f"pgvector {row['extversion'] if row else '?'} retrieved {retrieved}"
+        )
 
     # Nothing was approved, because nothing was even proposed.
     async with db.user_scope(alice.claims) as conn:
