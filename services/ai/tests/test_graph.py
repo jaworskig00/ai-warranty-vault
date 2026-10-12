@@ -571,7 +571,8 @@ async def test_a_decision_on_a_thread_that_is_not_waiting_changes_nothing(
 ):
     from app.graph.drafts import reject_draft
 
-    thread_id = await _thread(db, alice, alice.product_id)
+    # A real thread exists for this user, but no draft on it is awaiting a decision.
+    await _thread(db, alice, alice.product_id)
     result = (
         await approve_draft(
             db, alice.claims, draft_id=uuid.uuid4(), approved_subject="x", approved_body="y"
