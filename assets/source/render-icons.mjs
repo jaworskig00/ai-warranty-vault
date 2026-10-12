@@ -34,8 +34,12 @@ const monochrome = `
   <path mask="url(#cut)" fill="#fff"
         d="M512 176 L784 278 V488 C784 668 666 794 512 848 C358 794 240 668 240 488 V278 Z"/>`;
 
-const svg = (body) =>
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="100%" height="100%">${defs}${body}</svg>`;
+const svg = (body, viewBox = '0 0 1024 1024') =>
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" width="100%" height="100%">${defs}${body}</svg>`;
+
+// The in-app logo: the mark alone, cropped to the shield and its stroke so it can
+// sit inline at any height. Rendered at 3× its largest use (64 pt).
+const SHIELD_VIEWBOX = '226 162 572 700';
 
 const variants = [
   // iOS: full-bleed and opaque — the system applies the rounded mask itself.
@@ -45,6 +49,14 @@ const variants = [
   { file: 'android-icon-background.png', size: 512, body: background, transparent: false },
   { file: 'android-icon-foreground.png', size: 512, body: scaled(mark), transparent: true },
   { file: 'android-icon-monochrome.png', size: 432, body: scaled(monochrome), transparent: true },
+  {
+    file: 'images/shield.png',
+    width: 157,
+    height: 192,
+    body: mark,
+    viewBox: SHIELD_VIEWBOX,
+    transparent: true,
+  },
 ];
 
 const browser = await puppeteer.launch({
@@ -52,12 +64,13 @@ const browser = await puppeteer.launch({
   args: ['--no-sandbox'],
 });
 const page = await browser.newPage();
-for (const { file, size, body, transparent } of variants) {
-  await page.setViewport({ width: size, height: size, deviceScaleFactor: 1 });
+for (const { file, size, width = size, height = size, body, viewBox, transparent } of variants) {
+  await page.setViewport({ width, height, deviceScaleFactor: 1 });
   await page.setContent(
-    `<html><body style="margin:0;background:transparent">${svg(body)}</body></html>`,
+    `<html><body style="margin:0;background:transparent;width:${width}px;height:${height}px">` +
+      `${svg(body, viewBox)}</body></html>`,
   );
   await page.screenshot({ path: join(assets, file), omitBackground: transparent });
-  console.log(`${file} ${size}x${size}`);
+  console.log(`${file} ${width}x${height}`);
 }
 await browser.close();

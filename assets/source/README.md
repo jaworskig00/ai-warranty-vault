@@ -11,6 +11,7 @@ theme colours (`src/theme`). The PNGs in `assets/` are rendered from it:
 | `android-icon-monochrome.png` | 432 | Alpha-only silhouette for Android 13 themed icons. |
 | `favicon.png` | 48 | Web. |
 | `splash-icon.png` | 1024 | Mark only, transparent. |
+| `images/shield.png` | 157×192 | The mark cropped to the shield, for the in-app logo (`src/components/ShieldLogo.tsx`). |
 
 To regenerate after editing the SVG (needs a local puppeteer and Chromium; neither is
 a project dependency):
