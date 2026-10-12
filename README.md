@@ -236,6 +236,11 @@ service container, with mock providers and no secrets) on every push and pull re
 `ai:test` needs a local Postgres 16 with pgvector on port 5432 (override with
 `TEST_ADMIN_DATABASE_URL`); it creates and resets its own `ai_vault_test` database.
 
+Chunk sizes are measured with `tiktoken` where its vocabulary can be downloaded (as on
+CI) and with a deterministic approximate counter where it can't (offline machines). The
+tokenizer is part of `index_version`, so the two never share an index — and the tests
+are written not to depend on where chunk boundaries fall.
+
 > **Typed routes:** `typedRoutes` is on, and its route types are generated into `.expo/`
 > by the dev server only. On a fresh clone route strings are checked permissively; after
 > pulling new screens, run `npm start` once so `tsc` checks them against the real routes.

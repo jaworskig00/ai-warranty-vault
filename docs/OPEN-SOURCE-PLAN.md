@@ -65,3 +65,19 @@ on the repo, understands it in 30 seconds, trusts it's safe, and can run it.
 - Fresh clone: `git clone` the pushed branch into a scratch dir and follow the README literally through every step that doesn't need Docker or a simulator.
 - CI: workflow green on the PR for both jobs.
 - Re-run the history secret scan on the final branch.
+
+## Implementation notes
+
+What changed against the plan while doing it:
+
+- **CI found a real test fragility.** One test (the prompt-injection probe) passed locally
+  and failed on GitHub's runner. Root cause: chunk sizes are measured with `tiktoken` when
+  its vocabulary can be downloaded and with an approximate counter when it can't; this
+  sandbox has no egress to that download, the runner does, so chunk boundaries differed
+  and the test's question no longer reached the injected sentence. Reproduced locally by
+  varying the chunk size (fails below ~60 tokens), fixed by making the question quote the
+  injected sentence, and verified at every chunk size from 20 to 200. The assertion now
+  reports what was retrieved and the pgvector version if it ever fails again.
+- Action majors bumped to their Node 24 releases after the runner flagged Node 20 as
+  deprecated.
+- `docs/screenshots/README.md` lists the expected image names for the maintainer to fill.
