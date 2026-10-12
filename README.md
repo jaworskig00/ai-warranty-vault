@@ -290,8 +290,9 @@ docs/             Product, architecture, roadmap, AI architecture / demo / inter
 
 ## Contributing & security
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Please report vulnerabilities privately as
-described in [SECURITY.md](SECURITY.md).
+See [CONTRIBUTING.md](CONTRIBUTING.md) and the [code of conduct](CODE_OF_CONDUCT.md).
+Please report vulnerabilities privately as described in [SECURITY.md](SECURITY.md).
+Release notes are in [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 
