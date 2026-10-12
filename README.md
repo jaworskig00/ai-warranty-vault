@@ -141,6 +141,10 @@ This applies every migration in `supabase/migrations/` and prints the local API 
 anon key, service-role key and JWT secret — you'll paste some of them below.
 Supabase Studio is at <http://127.0.0.1:54323>.
 
+Migrations are applied only when the local database is first created. If you started
+this stack before pulling newer migrations, `npx supabase migration up --local` applies
+the missing ones.
+
 ### 3. Configure the three environments
 
 There are three `.env.example` files, one per runtime. Each documents every variable.
@@ -166,9 +170,12 @@ and the anon key printed by `db:start`. All real `.env` files are git-ignored.
 npm run ios                   # or: npm run android · npm start (Expo Go / QR code)
 ```
 
-Sign up with any email — local Auth doesn't send real mail. To try receipt extraction,
-serve the Edge Functions in a second terminal (needs `ANTHROPIC_API_KEY` in
-`supabase/.env`):
+Sign up with any email — local Auth doesn't send real mail. Without an Anthropic key,
+add a product by picking any image under **Add**: extraction fails gracefully and the
+review screen lets you fill in the details yourself.
+
+To try receipt extraction, serve the Edge Functions in a second terminal (needs
+`ANTHROPIC_API_KEY` in `supabase/.env`):
 
 ```bash
 npm run fn:serve
@@ -188,8 +195,9 @@ npm run ai:serve              # API on :8000
 npm run ai:worker             # indexing worker, in another terminal
 ```
 
-`EXPO_PUBLIC_AI_API_URL=http://127.0.0.1:8000` in `.env` connects the app. Leave it
-unset and the app works as before — the document screens explain what's missing.
+`EXPO_PUBLIC_AI_API_URL=http://127.0.0.1:8000` in `.env` (set by the template) connects
+the app. Without the service running, the document screens say they can't reach it;
+comment the line out and they explain what's missing instead.
 
 No keys yet? `npm run ai:walkthrough` runs the whole document flow — upload, index,
 ask, cite, draft, restart mid-approval, approve exactly once — with deterministic mock
