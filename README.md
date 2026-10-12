@@ -116,10 +116,10 @@ Deep dives: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) (app + backend) ·
 
 ### Prerequisites
 
-- **Node.js 22** and npm
+- **Node.js 22** and npm (pinned in `.nvmrc` — `nvm use` picks it up)
 - **Docker** (for the local Supabase stack)
 - **Xcode / iOS Simulator** or an Android emulator (or Expo Go on a device)
-- **Python 3.11** — only for the document assistant
+- **Python 3.11** — only for the document assistant (pinned in `services/ai/.python-version`)
 - API keys only for the AI features: **Anthropic** (receipt extraction, answering) and
   **OpenAI** (embeddings). The app, database and tests run without them.
 
